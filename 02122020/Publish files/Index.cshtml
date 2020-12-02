@@ -1,0 +1,1173 @@
+﻿
+@{
+    ViewBag.Title = "Questionnaire Settings";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var flag = ViewData["flag"];
+}
+@section scripts{
+    <script src="~/Scripts/AngularController/DACQuestionnaireController.js"></script>
+}
+<style>
+    body, html {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .main-section {
+        background-color: #ebeef5;
+        padding-bottom: 20px;
+    }
+
+    table.dataTable thead .sorting, table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc, table.dataTable thead .sorting_asc_disabled, table.dataTable thead .sorting_desc_disabled {
+        padding: 10px 15px 10px 10px !important;
+    }
+
+        table.dataTable thead .sorting:nth-last-child(1), table.dataTable thead .sorting:nth-last-child(2) {
+            background-image: none;
+        }
+
+    .dataTables_wrapper {
+        padding: 16px;
+        overflow-x: auto;
+    }
+
+    table.dataTable thead th, table.dataTable thead td {
+        border-bottom: 3px solid #dcdcdc;
+    }
+
+    .selected-field.odd, .selected-field.even {
+        background-color: #fff !important;
+    }
+
+    tr.selected-field td.sorting_1 {
+        background-color: #fff !important;
+    }
+
+    table.dataTable.no-footer {
+        border: none;
+    }
+
+    table.dataTable tbody td.select-checkbox:before {
+        margin-top: 5px;
+        width: 14px;
+        height: 14px;
+    }
+
+    .dataTables_paginate {
+        border: 1px solid #ddd;
+        padding: 0 !important;
+    }
+
+    .paginate_button.current {
+        background: #007bff !important;
+        color: #fff !important;
+    }
+
+    table.dataTable tr.selected td.select-checkbox:after, table.dataTable tr.selected th.select-checkbox:after {
+        margin-top: 13px;
+        margin-left: -5px;
+        font-size: xx-small;
+    }
+
+    table.dataTable thead .sorting::after {
+        opacity: 0 !important;
+    }
+
+    table.dataTable thead .sorting_desc:after {
+        content: "" !important;
+        opacity: 0;
+    }
+
+    table.dataTable thead .sorting_asc:after {
+        content: "" !important;
+        opacity: 0;
+    }
+
+    .dropdowns label {
+        color: #333;
+        font-weight: 600;
+    }
+
+    .dropdowns select {
+        width: 55%;
+    }
+
+    .status {
+        background: #00a642;
+        color: #fff;
+        padding: 0px 10px 1px 10px;
+        border-radius: 4px;
+    }
+
+    .display-none {
+        display: none;
+    }
+
+    .main-section {
+        background-color: #ebeef5;
+    }
+
+    .heading {
+        margin: 0 20px;
+        font-family: sans-serif;
+        letter-spacing: .03;
+    }
+
+        .heading h3 {
+            font-size: 26px;
+            padding: 8px 0px 0 0;
+        }
+
+    .subSection {
+        background: #fff;
+        margin: 0 20px;
+        border-top: 4px solid #47af87;
+        padding: 16px 0 0px 0px;
+    }
+
+    .bread-crumb {
+        font-size: 12px;
+        padding: 15px 0px 15px 0;
+        color: #000;
+    }
+
+    .button-class {
+        padding: 0 0 15px 15px;
+        text-align: center;
+    }
+
+    .add-btn {
+        background: #3c8dbc;
+        color: #fff;
+        margin: 10px 15px 0 0;
+        position: absolute;
+        right: 20px;
+        min-width: 115px;
+    }
+
+    .preview-btn {
+        background: #3c8dbc;
+        color: #fff;
+        margin-right: 30px;
+        min-width: 115px;
+    }
+
+    .save-btn {
+        background: #3c8dbc;
+        color: #fff;
+        margin-right: 30px;
+        min-width: 115px;
+    }
+
+    .cancel-btn {
+        background: #f4f4f4;
+        color: #000;
+        border: 1px solid #ddd;
+        margin-right: 30px;
+        min-width: 115px;
+    }
+
+    .add-icon {
+        margin-right: 15px;
+    }
+
+    .dropdowns label {
+        color: #333;
+        font-weight: 600;
+    }
+
+    .dropdowns select {
+        width: 55%;
+    }
+
+    .questionnaires-table {
+        width: auto !important;
+        margin: 0 !important;
+    }
+
+    .box-body {
+        width: 100%;
+        display: inline-block;
+    }
+
+    table.dataTable tbody th, table.dataTable tbody td {
+        max-width: 260px;
+        word-break: break-word;
+    }
+
+    /*table.dataTable thead .sorting:nth-last-child(1), table.dataTable thead .sorting:nth-last-child(2) {
+        background-image: none;
+    }
+
+    .dataTables_wrapper {
+        padding: 16px;
+        overflow-x: auto;
+    }
+
+    table.dataTable thead th, table.dataTable thead td {
+        border-bottom: 3px solid #dcdcdc;
+    }
+
+    .selected-field.odd, .selected-field.even {
+        background-color: #fff !important;
+    }
+
+    tr.selected-field td.sorting_1 {
+        background-color: #fff !important;
+    }
+
+    table.dataTable.no-footer {
+        border: none;
+    }
+
+    table.dataTable tbody td.select-checkbox:before {
+        margin-top: 5px;
+        width: 14px;
+        height: 14px;
+    }
+
+    .dataTables_paginate {
+        border: 1px solid #ddd;
+        padding: 0 !important;
+    }
+
+    .paginate_button.current {
+        background: #007bff !important;
+        color: #fff !important;
+    }
+
+    table.dataTable tr.selected td.select-checkbox:after, table.dataTable tr.selected th.select-checkbox:after {
+        margin-top: 13px;
+        margin-left: -5px;
+        font-size: xx-small;
+    }
+
+    .dropdowns label {
+        color: #333;
+        font-weight: 600;
+    }
+
+    .dropdowns select {
+        width: 55%;
+    }*/
+
+    .status {
+        background: #00a642;
+        color: #fff;
+        padding: 0px 10px 1px 10px;
+        border-radius: 4px;
+    }
+
+
+    .note-editor .note-toolbar {
+        background: #eaeaea;
+    }
+
+    .button-class {
+        padding: 0 0 15px 15px;
+        text-align: center;
+    }
+
+    .save-btn {
+        background: #3c8dbc;
+        color: #fff;
+        margin-right: 30px;
+        min-width: 115px;
+    }
+
+    .cancel-btn {
+        background: #f4f4f4;
+        color: #000;
+        border: 1px solid #ddd;
+        margin-right: 30px;
+        min-width: 115px;
+    }
+
+    .summerNoteDiv {
+        min-width: 100%;
+    }
+
+    .summerNote-label {
+        width: 20%;
+        color: #333;
+        font-weight: 600
+    }
+
+    .d-type-SummerNote {
+        display: flex;
+    }
+
+    .d-type-bg-flex {
+        display: flex;
+    }
+
+    .summerNote-label {
+        width: 42%;
+        color: #333;
+        font-weight: 600
+    }
+
+    .d-type-bg-flex {
+        display: block;
+    }
+
+    .dropdowns label {
+    }
+
+    .lblRadio {
+        width: 100% !important;
+    }
+
+    .dropdowns select {
+        width: 100%;
+    }
+
+    .summerNote-label {
+        width: 100%;
+    }
+
+    .d-type-SummerNote {
+        display: block;
+    }
+
+    body, html {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .main-section {
+        background-color: #ebeef5;
+        padding-bottom: 20px;
+    }
+
+    table.dataTable thead .sorting:nth-last-child(1), table.dataTable thead .sorting:nth-last-child(2) {
+        background-image: none;
+    }
+
+    .dataTables_wrapper {
+        padding: 16px;
+        overflow-x: auto;
+    }
+
+    table.dataTable thead th, table.dataTable thead td {
+        border-bottom: 3px solid #dcdcdc;
+    }
+
+    .selected-field.odd, .selected-field.even {
+        background-color: #fff !important;
+    }
+
+    tr.selected-field td.sorting_1 {
+        background-color: #fff !important;
+    }
+
+    table.dataTable.no-footer {
+        border: none;
+    }
+
+    table.dataTable tbody td.select-checkbox:before {
+        margin-top: 5px;
+        width: 14px;
+        height: 14px;
+    }
+
+    .dataTables_paginate {
+        border: 1px solid #ddd;
+        padding: 0 !important;
+    }
+
+    .paginate_button.current {
+        background: #007bff !important;
+        color: #fff !important;
+    }
+
+    table.dataTable tr.selected td.select-checkbox:after, table.dataTable tr.selected th.select-checkbox:after {
+        margin-top: 13px;
+        margin-left: -5px;
+        font-size: xx-small;
+    }
+
+    .dropdowns label {
+        color: #333;
+        font-weight: 600;
+    }
+
+    .dropdowns select {
+        width: 55%;
+    }
+
+    .status {
+        background: #00a642;
+        color: #fff;
+        padding: 0px 10px 1px 10px;
+        border-radius: 4px;
+    }
+
+    .display-none {
+        display: none;
+    }
+
+    .heading {
+        margin: 0 20px;
+        font-family: sans-serif;
+        letter-spacing: .03;
+    }
+
+        .heading h3 {
+            font-size: 26px;
+            padding: 8px 0px 0 0;
+        }
+
+    .subSection {
+        background: #fff;
+        margin: 0 20px;
+        border-top: 4px solid #47af87;
+        padding: 16px 0 0px 0px;
+    }
+
+    .bread-crumb {
+        font-size: 12px;
+        padding: 15px 0px 15px 0;
+        color: #000;
+    }
+
+    .note-editor .note-toolbar {
+        background: #eaeaea;
+    }
+
+    .button-class {
+        padding: 0 0 15px 15px;
+        text-align: center;
+    }
+
+    .save-btn {
+        background: #3c8dbc;
+        color: #fff;
+        margin-right: 30px;
+        min-width: 115px;
+    }
+
+    .cancel-btn {
+        background: #f4f4f4;
+        color: #000;
+        border: 1px solid #ddd;
+        margin-right: 30px;
+        min-width: 115px;
+    }
+
+    .summerNoteDiv {
+        min-width: 100%;
+    }
+
+    .summerNote-label {
+        width: 20%;
+        color: #333;
+        font-weight: 600
+    }
+
+    .d-type-SummerNote {
+        display: flex;
+    }
+
+    .d-type-bg-flex {
+        display: flex;
+    }
+
+    .summerNote-label {
+        width: 42%;
+        color: #333;
+        font-weight: 600
+    }
+
+    .d-type-bg-flex {
+        display: block;
+    }
+
+    .dropdowns label {
+    }
+
+    .lblRadio {
+        width: 100% !important;
+        font-weight: 600 !important;
+    }
+
+    .lblRadioInput {
+        font-weight: 600 !important;
+    }
+
+    .dropdowns select {
+        width: 100%;
+    }
+
+    .summerNote-label {
+        width: 100%;
+    }
+
+    .d-type-SummerNote {
+        display: block;
+    }
+</style>
+
+
+<div ng-controller="QuestionnaireCont" ng-init="LoadQuestionData()">
+    @if ((bool)flag == true)
+    {
+        <input type="hidden" id="hdnFlag" value="true" />
+    }
+    else
+    {
+        <input type="hidden" id="hdnFlag" value="false" />
+    }
+
+    <div id="questionHome">
+        <div class="main-section">
+            <div class="heading d-flex justify-content-between">
+                <h3>Questionnaire Settings</h3>
+                <div class="bread-crumb">Home > <span class="breadcrumbActiveChange">DAC</span> > Questionnaire Settings</div>
+            </div>
+
+            <div class="subSection" style="padding: 0 !important;background: transparent !important;">
+                <div class="row" style="padding-bottom: 45px;">
+                    <div class="btn-add-new-div">
+                        <button class="btn add-btn" ng-click="AddQuestion()"><i class="fa fa-plus-circle add-icon" aria-hidden="true"></i>Add Question</button>
+                    </div>
+                </div>
+                <form>
+                    <div class="dropdowns pt-2">
+                        <!--<div class="col-md-5 col-lg-5 col-sm-12">
+                        <div class="form-group">
+                          <label for="pName" style="width: 40%;">Process Name</label>
+                          <select  id="pName" class="pName">
+                            <option >DAF</option>
+                            <option >DAC</option>
+                            <option >AFIP</option>
+                          </select>
+                        </div>
+                        </div>-->
+                        <div id="AddAssetClassDAC" class="col-md-8 col-lg-6 col-sm-12" ng-init="PopupAddDACAssetClass()">
+                            <div class="form-group">
+                                <label for="cars" style="width: 40%;">Asset Name</label>
+                                <select id="AssetClass" class="form-control select2" ng-model="selectedAssetClassId"
+                                        ng-options="item.AssetID as item.AssetName for item in ASSETS" required ng-change="ResetDropdowns()">
+                                    <option value="">
+                                        Select Asset...
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-8 col-lg-6 col-sm-12" ng-init="GetQuestionGroup()">
+                            <div class="form-group">
+                                <label for="processGroupLabel" style="width: 40%;">Process Group</label>
+                                <select id="ProcessGroup" class="form-control select2" ng-model="selectedProcessGroup"
+                                        ng-options="item.ProcessGroupId as item.ProcessGroupName for item in ProcessGroups" required ng-change="GetSectionHeading()">
+                                    <option value="">
+                                        Select Process Group...
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        @*<div class="col-md-8 col-lg-6 col-sm-12" id="SectionName">
+                                <div class="form-group">
+                                    <label for="cars" style="width: 40%;">Section Name</label>
+                                    <select name="cars" id="secName" ng-model="selectedSectionId"
+                                            ng-options="item.QSecId as item.SectionName for item in SectionNames" required>
+                                        <option value="">
+                                            Select Section Name...
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>*@
+                        <div class="col-md-8 col-lg-6 col-sm-12">
+                            <div class="form-group">
+                                <label for="sectionHeadingLabel" style="width: 40%;">Section Heading</label>
+                                <select id="secHeading" class="form-control select2" ng-model="selectedSectionId"
+                                        ng-options="item.QSecID as item.SectionHeading for item in SectionHeadings" required ng-change="GetSubSectionHeading()">
+                                    <option value="">
+                                        Select Section Heading...
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        @*<div class="col-md-8 col-lg-6 col-sm-12" ng-init="GetSubSectionName()">
+                                <div class="form-group">
+                                    <label for="cars" style="width: 40%;">Sub Section Name</label>
+                                    <select name="cars" id="secHeading"
+                                            ng-options="item.QSecId as item.SectionName for item in SubSectionNames" required>
+                                        <option value="">
+                                            Select Section Name...
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>*@
+                        <div class="col-md-8 col-lg-6 col-sm-12">
+                            <div class="form-group">
+                                <label for="subSectionHeadingLabel" style="width: 40%;">Sub Section Heading</label>
+                                <select id="subSectionHeading" class="form-control select2" ng-model="selectedSectionPartId"
+                                        ng-options="item.SecPartID as item.SubSecHeadingText for item in SubSectionHeadings" required ng-change="LoadQuestionData()">
+                                    <option value="">
+                                        Select Sub Section Heading...
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        @*<div class="col-md-8 col-lg-6 col-sm-12" ng-init="GetSectionPartNo()">
+                                <div class="form-group">
+                                    <label for="cars" style="width: 40%;">Section Part No</label>
+                                    <select name="cars" id="secHeading"
+                                            ng-options="item.QSecId as item.SectionName for item in SectionPartNumbers" required>
+                                        <option value="">
+                                            Select Section Part No...
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>*@
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+        <div class="box-body">
+            <div class="table-responsive">
+                <hr style="height:1px; width: 100%; color:gray;background-color:gray" />
+                <table id="questionnaires-table" class="table">
+                    <thead>
+                        <tr>
+                            <th style="width: 10px">Question No</th>
+                            <th style="min-width: 300px !important">Question Text</th>
+                            <th>Display Order</th>
+                            <th>Status</th>
+                            <th>Mandatory</th>
+                            @*<th>Question ID</th>*@
+                            <th>Sub question</th>
+                            @*<th>Parent Question ID</th>*@
+                            <th>Reference Note</th>
+                            <td class="sorting_disabled"></td>
+                            <td class="sorting_disabled"></td>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="editquestion" class="main-section">
+        <div class="heading d-flex justify-content-between">
+            <h3>Edit Question</h3>
+            <div class="bread-crumb">Home > <span class="breadcrumbActiveChange">DAC</span>> Edit Question</div>
+        </div>
+        <div class="subSection">
+            <form ng-submit="EditQuestionForm()">
+                <div class="dropdowns pt-2">
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 d-type-bg-flex" ng-init="PopupAddDACAssetClass()">
+                            <div class="col-md-8 col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label for="cars" style="width: 40%;">Asset Name</label>
+                                    <span id="spanAssetName"></span>
+                                    <input type="hidden" id="hdAssetId" />
+                                    @*<select id="AssetClass_Edit" class="form-control select2" ng-model="selectedAssetClassId"
+                                                ng-options="item.AssetID as item.AssetName for item in ASSETS" required>
+                                            <option value="" selected>
+                                                Select Asset...
+                                            </option>
+                                        </select>*@
+                                    <select name='AssetClass_Edit' id="AssetClass_Edit" class="form-control select2" required disabled onchange="AssetChangedEdit()"></select>
+                                </div>
+                            </div>
+                            <div class="col-md-8 col-lg-6 col-sm-12" ng-init="GetQuestionGroup()">
+                                <div class="form-group">
+                                    <label for="processGroupLabel" style="width: 40%;">Process Group</label>
+                                    @*<select id="ProcessGroup_Edit" class="form-control select2" ng-model="selectedProcessGroup"
+                                                ng-options="item.ProcessGroupId as item.ProcessGroupName for item in ProcessGroups" required onchange="angular.element(this).scope().GetSectionHeading()">
+                                            <option value="" selected>
+                                                Select Process Group...
+                                            </option>
+                                        </select>*@
+                                    <select name='ProcessGroup_Edit' id="ProcessGroup_Edit" class="form-control select2" required disabled onchange="ProcessGroupChangedEdit()">
+                                        <option value="" selected>
+                                            Select Process Group...
+                                        </option>
+                                    </select>
+                                    @*<span id="spanProcessGroup">Final IC</span>
+                                        <input type="hidden" id="hdProcessGroup" value="2" />*@
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 d-type-bg-flex">
+                            <div class="col-md-8 col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label for="lblSecHead" style="width: 40%;">Section Heading</label>
+                                    <span id="spanSectionHeading"></span>
+                                    <input type="hidden" id="hdSectionId" />
+                                    @*<select id="selHeading_edit" class="form-control select2" ng-model="selectedSectionId"
+                                                ng-options="item.QSecID as item.SectionHeading for item in SectionHeadings" required onchange="angular.element(this).scope().GetSubSectionHeading()">
+                                            <option value="" selected>
+                                                Select Section Heading...
+                                            </option>
+                                        </select>*@
+                                    <select name='selHeading_edit' id="selHeading_edit" class="form-control select2" required disabled onchange="SectionHeadingChangedEdit()">
+                                        <option value="" selected>
+                                            Select Section Heading...
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-8 col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label for="lblSubSectionHead" style="width: 40%;">Sub Section/ Phase Heading</label>
+                                    <span id="spanSubSectionHeading"></span>
+                                    @*<input type="hidden" id="hdSubSectionId" />
+                                        <select id="selSectionHeading_edit" class="form-control select2" ng-model="selectedSectionPartId"
+                                                ng-options="item.SecPartID as item.SubSecHeadingText for item in SubSectionHeadings" required>
+                                            <option value="" selected>
+                                                Select Sub Section Heading...
+                                            </option>
+                                        </select>*@
+                                    <select name='selSectionHeading_edit' id="selSectionHeading_edit" class="form-control select2" required disabled>
+                                        <option value="" selected>
+                                            Select Sub Section Heading...
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 d-type-bg-flex">
+                        <div class="col-md-8 col-lg-6 col-sm-12">
+                            <div class="form-group">
+                                <label for="lblStatus" class="lblRadio" style="width: 40%;">Status</label>
+                                <input type="radio" id="statusYes_edit" name="status" value="1" checked ng-model="selectedStatus">&nbsp;<label class="lblRadioInput" for="statusA">Active</label>&nbsp;&nbsp;
+                                <input type="radio" id="statusNo_edit" name="status" value="0" ng-model="selectedStatus">&nbsp;<label class="lblRadioInput" for="statusIA">Inactive</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-8 col-lg-6 col-sm-12">
+                            <div class="form-group">
+                                <label for="lblMandatory" style="width: 40%;" class="lblRadio">Mandatory</label>
+                                <input type="radio" id="mandatoryY_edit" name="mandate" checked value="1" ng-model="selectedMandatory">&nbsp;<label class="lblRadioInput" for="mandateY">Yes</label>&nbsp;&nbsp;
+                                <input type="radio" id="mandatoryN_edit" name="mandate" value="0" ng-model="selectedMandatory">&nbsp;<label class="lblRadioInput" for="mandateN">No</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="divAllifLpGroupEdit" class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 d-type-bg-flex">
+                        <div class="col-md-8 col-lg-6 col-sm-12">
+                            <div class="form-group">
+                                <label for="lblLPSprcific" class="lblRadio">LP Specific?</label>
+                                <input type="radio" id="lpsYes_edit" name="LPS" value="1" ng-model="selectedLpSpecific">&nbsp;<label class="lblRadioInput" for="lpsYes">Yes</label>&nbsp;&nbsp;
+                                <input type="radio" id="lpsNo_edit" name="LPS" value="0" ng-model="selectedLpSpecific">&nbsp;<label class="lblRadioInput" for="lpsNo">No</label>&nbsp;&nbsp;
+                                <input type="radio" id="lpsNa_edit" name="LPS" value="2" ng-model="selectedLpSpecific">&nbsp;<label class="lblRadioInput" for="lpsNa">NA</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-8 col-lg-6 col-sm-12">
+                            <div class="form-group">
+                                <label for="lblLP" class="lblRadio">LP</label>
+                                <input type="radio" id="lpYes_edit" name="LP" value="1" ng-model="selectedLp">&nbsp;<label class="lblRadioInput" for="lpYes">Yes</label>&nbsp;&nbsp;
+                                <input type="radio" id="lpNo_edit" name="LP" value="0" ng-model="selectedLp">&nbsp;<label class="lblRadioInput" for="lpNo">No</label>&nbsp;&nbsp;
+                                <input type="radio" id="lpNa_edit" name="LP" value="2" ng-model="selectedLp">&nbsp;<label class="lblRadioInput" for="lpNa">NA</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="dropdowns pt-2">
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 d-type-bg-flex">
+                            <div class="col-md-8 col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label for="lblqg" style="width: 40%;">Question Group</label>
+                                    <select class="form-control" name="selQuestionGroup" id="questionGroup_edit">
+                                        <option value="">Select Question Group...</option>
+                                        <option selected>1</option>
+                                        <option>2</option>
+                                        <option>3</option>
+                                        <option>4</option>
+                                        <option>5</option>
+                                        <option>6</option>
+                                        <option>7</option>
+                                        <option>8</option>
+                                        <option>9</option>
+                                        <option>10</option>
+                                        <option>11</option>
+                                        <option>12</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-8 col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label for="cars" style="width: 50%;">Action/Question Number</label>
+                                    <input type="text" class="form-control" id="txtQuestionNo_Edit" value="" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-8 col-lg-7 col-sm-12 mb-1 mt-2 pt-3 pb-1 summerNoteDiv">
+                    <div class="form-group d-type-SummerNote">
+                        <label for="summernote1" style="" class="summerNote-label">Question Text</label>
+                        <textarea id="txtAreaQuestionText_edit" class="summernote" ng-model="questionTextValue"></textarea>
+                    </div>
+                </div>
+                <div id="divAllifControlGroupEdit">
+                    <div class="col-md-8 col-lg-7 col-sm-12 mb-1 mt-2 pt-3 pb-1 summerNoteDiv">
+                        <div class="form-group d-type-SummerNote">
+                            <label for="summernote1" style="" class="summerNote-label">Metric</label>
+                            <textarea id="txtAreaMetric_edit" class="summernote" ng-model="metricValue"></textarea>
+                        </div>
+                    </div>
+
+                    <div style="display: inline-flex;">
+                        <div style="min-width: 49%;" class="col-md-8 col-lg-7 col-sm-12 mb-1 mt-2 pt-3 pb-1 summerNoteDiv">
+                            <div class="form-group d-type-SummerNote">
+                                <label for="lblYesFolloup" style="" class="summerNote-label">If Question Response = 'Yes', Follow-up Question Text</label>
+                                <textarea id="txtAreaYesFolloup_edit" class="summernote" ng-model="YesFollowUpValue"></textarea>
+                            </div>
+                        </div>
+
+                        <div style="min-width: 49%;" class="col-md-8 col-lg-7 col-sm-12 mb-1 mt-2 pt-3 pb-1 summerNoteDiv">
+                            <div class="form-group d-type-SummerNote">
+                                <label for="lblNoFolloup" style="" class="summerNote-label">If Question Response = 'No', Follow-up Question Text</label>
+                                <textarea id="txtAreaNoFolloup_edit" class="summernote" ng-model="NoFollowUpValue"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-12 d-type-bg-flex">
+                            <div class="col-md-12 col-lg-12 col-sm-12">
+                                <div class="form-group">
+                                    <label for="lblYesLinkQuestion" style="width: 60%;">If Question Response = 'Yes', Link Question</label>
+                                    @*<select id="selYesLinkQuestion_edit" class="form-control select2" ng-model="selectedYesLinkQuestionId"
+                                                ng-options="item.QID as item.QID for item in LinkQuestionIds">
+                                            <option value="" selected>
+                                                Select Question ID...
+                                            </option>
+                                        </select>*@
+                                    <select id="selYesLinkQuestion_edit" class="form-control select2" onchange="YesQuestionChangeEdit()">
+                                        @*ng-model="selectedYesLinkQuestionId" ng-options="item.QID as item.QID for item in LinkQuestionIds">*@
+                                        <option value="" selected>
+                                            Select Question ID...
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6 col-md-6 col-sm-12 d-type-bg-flex">
+                            <div class="col-md-12 col-lg-12 col-sm-12">
+                                <div class="form-group">
+                                    <label for="lblNoLinkQuestion" style="width: 60%;">If Question Response = 'No', Link Question</label>
+                                    <select id="selNoLinkQuestion_edit" class="form-control select2" onchange="NoQuestionChangeEdit()">
+                                        @*ng-model="selectedNoLinkQuestionId" ng-options="item.QID as item.QID for item in LinkQuestionIds">*@
+                                        <option value="" selected>
+                                            Select Question ID...
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 d-type-bg-flex">
+                            <div class="col-md-8 col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label for="lblClauseRef_Edit">Clause Reference</label>
+                                    <input type="text" class="form-control" id="txtClauseRef_Edit" ng-model="ClauseRefValue">
+                                </div>
+                            </div>
+                            <div class="col-md-8 col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    &nbsp;
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-8 col-lg-7 col-sm-12 mb-1 mt-2 pt-3 pb-1 summerNoteDiv">
+                    <div class="form-group d-type-SummerNote">
+                        <label for="lblNoteRef" style="" class="summerNote-label">Reference Note Text</label>
+                        <textarea id="txtAreaNoteRef_edit" class="summernote" ng-model="NoteRefValue"></textarea>
+                    </div>
+                </div>
+                <div class="button-class">
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-fw fa-save"></i> Save </button>
+                    <button type="button" class="btn btn-primary" ng-click="ResetEdit()"><i class="fa fa-fw fa-refresh"></i> Reset </button>
+                    <button type="button" class="btn btn-primary" ng-click="RedirectToHomePage()" data-dismiss="modal"><i class="fa fa-fw fa-close"></i> Cancel</button>
+                </div>
+
+                <input type="hidden" id="hdQuestionId" />
+            </form>
+        </div>
+    </div>
+
+    <div id="viewquestion" class="main-section">
+        <div class="heading d-flex justify-content-between">
+            <h3>View Question</h3>
+            <div class="bread-crumb">Home > <span class="breadcrumbActiveChange">DAC</span>> View Question</div>
+        </div>
+        <div class="subSection">
+            <div class="dropdowns pt-2">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 d-type-bg-flex" ng-init="PopupAddDACAssetClass()">
+                        <div class="col-md-8 col-lg-6 col-sm-12">
+                            <div class="form-group">
+                                <label for="cars" style="width: 40%;">Asset Name</label>
+                                <span id="spanAssetNameView"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-8 col-lg-6 col-sm-12" ng-init="GetQuestionGroup()">
+                            <div class="form-group">
+                                <label for="processGroupLabel" style="width: 40%;">Process Group</label>
+                                <span id="spanProcessGroupView"></span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 d-type-bg-flex">
+                        <div class="col-md-8 col-lg-6 col-sm-12">
+                            <div class="form-group">
+                                <label for="lblSecHead" style="width: 40%;">Section Heading</label>
+                                <span id="spanSectionHeadingView"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-8 col-lg-6 col-sm-12">
+                            <div class="form-group">
+                                <label for="lblSubSectionHead" style="width: 40%;">Sub Section/ Phase Heading</label>
+                                <span id="spanSubSectionHeadingView"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 d-type-bg-flex">
+                    <div class="col-md-8 col-lg-6 col-sm-12">
+                        <div class="form-group">
+                            <label for="lblStatus" class="lblRadio" style="width: 40%;">Status</label>
+                            <input disabled type="radio" id="statusYes_View" name="status" value="1" checked ng-model="selectedStatus">&nbsp;<label class="lblRadioInput" for="statusA">Active</label>&nbsp;&nbsp;
+                            <input disabled type="radio" id="statusNo_View" name="status" value="0" ng-model="selectedStatus">&nbsp;<label class="lblRadioInput" for="statusIA">Inactive</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-8 col-lg-6 col-sm-12">
+                        <div class="form-group">
+                            <label for="lblMandatory" style="width: 40%;" class="lblRadio">Mandatory</label>
+                            <input disabled type="radio" id="mandatoryY_View" name="mandate" checked value="1" ng-model="selectedMandatory">&nbsp;<label class="lblRadioInput" for="mandateY">Yes</label>&nbsp;&nbsp;
+                            <input disabled type="radio" id="mandatoryN_View" name="mandate" value="0" ng-model="selectedMandatory">&nbsp;<label class="lblRadioInput" for="mandateN">No</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="divLpGroupView" class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 d-type-bg-flex">
+                    <div class="col-md-8 col-lg-6 col-sm-12">
+                        <div class="form-group">
+                            <label for="lblLPSprcific" class="lblRadio">LP Specific?</label>
+                            <input disabled type="radio" id="lpsYes_View" name="LPS" value="1" ng-model="selectedLpSpecific">&nbsp;<label class="lblRadioInput" for="lpsYes">Yes</label>&nbsp;&nbsp;
+                            <input disabled type="radio" id="lpsNo_View" name="LPS" value="0" ng-model="selectedLpSpecific">&nbsp;<label class="lblRadioInput" for="lpsNo">No</label>&nbsp;&nbsp;
+                            <input disabled type="radio" id="lpsNa_View" name="LPS" value="2" ng-model="selectedLpSpecific">&nbsp;<label class="lblRadioInput" for="lpsNa">NA</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-8 col-lg-6 col-sm-12">
+                        <div class="form-group">
+                            <label for="lblLP" style="width: 40%;">LP</label>
+                            <input disabled type="radio" id="lpYes_View" name="LP" value="1" ng-model="selectedLp">&nbsp;<label class="lblRadioInput" for="lpYes">Yes</label>&nbsp;&nbsp;
+                            <input disabled type="radio" id="lpNo_View" name="LP" value="0" ng-model="selectedLp">&nbsp;<label class="lblRadioInput" for="lpNo">No</label>&nbsp;&nbsp;
+                            <input disabled type="radio" id="lpNa_View" name="LP" value="2" ng-model="selectedLp">&nbsp;<label class="lblRadioInput" for="lpNa">NA</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="dropdowns pt-2">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 d-type-bg-flex">
+                        <div class="col-md-8 col-lg-6 col-sm-12">
+                            <div class="form-group">
+                                <label for="form-control" style="width: 40%;">Question Group</label>
+                                <select name="selQuestionGroup_View" class="form-control" id="questionGroup_View" ng-model="selectedQuestionGroupId" disabled>
+                                    <option value="">Select Question Group...</option>
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                    <option>6</option>
+                                    <option>7</option>
+                                    <option>8</option>
+                                    <option>9</option>
+                                    <option>10</option>
+                                    <option>11</option>
+                                    <option>12</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-8 col-lg-6 col-sm-12">
+                            <div class="form-group">
+                                <label for="cars" style="width: 50%;">Action/Question Number</label>
+                                <p id="txtQuestionNo_View"></p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8 col-lg-7 col-sm-12 mb-1 mt-2 pt-3 pb-1 summerNoteDiv">
+                <div class="form-group">
+                    <label style="">Question Text</label>
+                    <p id="txtAreaQuestionText_View"></p>
+                </div>
+            </div>
+
+            <div id="divAllifControlGroupView">
+                <div class="col-md-8 col-lg-7 col-sm-12 mb-1 mt-2 pt-3 pb-1 summerNoteDiv">
+                    <div class="form-group d-type-SummerNote">
+                        <label style="">Metric</label>
+                        <p id="txtAreaMetric_View"></p>
+                    </div>
+                </div>
+
+                <div class="col-md-8 col-lg-7 col-sm-12 mb-1 mt-2 pt-3 pb-1 summerNoteDiv">
+                    <div class="form-group d-type-SummerNote">
+                        <label style="">If Question Response = 'Yes', Follow-up Question Text</label>
+                        <p id="txtAreaYesFolloup_View"></p>
+                    </div>
+                </div>
+
+                <div class="col-md-8 col-lg-7 col-sm-12 mb-1 mt-2 pt-3 pb-1 summerNoteDiv">
+                    <div class="form-group d-type-SummerNote">
+                        <label style="">If Question Response = 'Yes', Linked Question ID</label>
+                        <p id="txtYesLinkedId_View"></p>
+                    </div>
+                </div>
+
+                <div class="col-md-8 col-lg-7 col-sm-12 mb-1 mt-2 pt-3 pb-1 summerNoteDiv">
+                    <div class="form-group d-type-SummerNote">
+                        <label style="">If Question Response = 'No', Follow-up Question Text</label>
+                        <p id="txtAreaNoFolloup_View"></p>
+                    </div>
+                </div>
+
+                <div class="col-md-8 col-lg-7 col-sm-12 mb-1 mt-2 pt-3 pb-1 summerNoteDiv">
+                    <div class="form-group d-type-SummerNote">
+                        <label style="">If Question Response = 'No', Linked Question ID</label>
+                        <p id="txtNoLinkedId_View"></p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 d-type-bg-flex">
+                        <div class="col-md-8 col-lg-6 col-sm-12">
+                            <div class="form-group">
+                                <label for="lblClauseRef_View">Clause Reference</label>
+                                <p id="txtClauseRef_View"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8 col-lg-7 col-sm-12 mb-1 mt-2 pt-3 pb-1 summerNoteDiv">
+                <div class="form-group d-type-SummerNote">
+                    <label style="">Reference Note Text</label>
+                    <p id="txtAreaNoteRef_View"></p>
+                </div>
+            </div>
+
+            <div class="button-class">
+                <button type="button" class="btn btn-primary" ng-click="RedirectToHomePage()" data-dismiss="modal"><i class="fa fa-fw fa-close"></i> Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal confirm -->
+<div class="modal" id="confirmModal" style="display: none; z-index: 1050;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body" style="font-size: 150%;" id="confirmMessage">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" id="confirmOk">Ok</button>
+                <button type="button" class="btn btn-default" id="confirmCancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    //$(document).ready(function () {
+    //    $('#questionnaires-table').DataTable({
+
+    //        columnDefs: [{
+    //            orderable: false,
+    //            targets: 0,
+    //            data: null,
+    //            defaultContent: '',
+    //            orderable: false
+    //        }],
+
+    //        order: [[1, 'asc']]
+    //    });
+    //});
+</script>
+<script>
+    $(document).ready(function () {
+        $("select.aName").change(function () {
+
+            var selectedProcess = $(this).children("option:selected").val();
+            if (selectedProcess == "A") {
+                console.log("A");
+                $(".questionnaires-table-body-DAF").removeClass('display-none');
+                $(".questionnaires-table-body-DAC").addClass('display-none');
+            }
+            else if (selectedProcess == "B") {
+                console.log("B");
+                $(".questionnaires-table-body-DAC").removeClass('display-none');
+                $(".questionnaires-table-body-DAF").addClass('display-none');
+            }
+            else {
+                console.log("APIF");
+            }
+
+        })
+
+        $('.summernote').summernote(
+            {
+                toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'underline', 'clear', 'superscript', 'subscript']],
+                    ['fontsize', ['fontsize']],
+                    ['fontname', ['fontname']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['table', ['table']],
+                    ['insert', ['link', 'picture', 'video']],
+                    ['view', ['fullscreen', 'codeview', 'help']]
+                ],
+                height: 120,
+                focus: false,
+                airMode: false,
+                fontNames: ['Roboto', 'Calibri', 'Times New Roman', 'Arial', 'Roboto']
+            });
+        var html = $('#summernote').summernote('code');
+    });
+</script>
+
+
