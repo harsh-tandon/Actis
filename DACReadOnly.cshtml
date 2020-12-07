@@ -1,0 +1,471 @@
+﻿
+@{
+    ViewBag.Title = "DAC Status";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var AllifClass = System.Configuration.ConfigurationManager.AppSettings["AllifClass"].ToString();
+}
+
+
+<style>
+
+    .img-send-reurn {
+        height: 20px;
+    }
+
+    .img-reject {
+        height: 16px;
+    }
+</style>
+
+
+@section scripts{
+    <script src="~/Scripts/AngularController/DACStatusController.js"></script>
+}
+    <div ng-controller="StatusCntrl" ng-init="GetDACReadOnlyInfo()">
+        <section class="content-header">
+            <h1>
+                Fund Checklist Status
+                <small>View status of Deal Acquisition Checklist</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i>Home</a></li>
+                <li><a href="#">Fund Checklist</a></li>
+                <li class="active">Fund Checklist Status</li>
+            </ol>
+        </section>
+
+        <!-- Form Body (Page body)-->
+        <section class="content">
+            <div class="box box-danger">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Document Information</h3> <br />
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Fund Checklist Form ID:</label>
+                                <input type="text" ng-model="DACFormNumber" readonly="readonly" name="DAC_FormID" value="" style="font-weight:bold; color:coral;" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Uploaded By:</label>
+                                <input type="text" ng-model="UploadedBy" readonly="readonly" name="UploadedBy" style="font-weight:bold; color:coral;" class="form-control" placeholder="">
+                            </div>
+                            <div class="form-group">
+                                <label>Created Date:</label>
+                                <input type="text" ng-model="CreatedDate" readonly="readonly" name="CreatedDate" style="font-weight:bold; color:coral;" class="form-control" placeholder="">
+                            </div>
+                            <div class="form-group" ng-show="showFields">
+                                <label>Checklist For:</label>
+                                <input type="text" id="idChecklistFor" ng-model="ChecklistFor" readonly="readonly" name="ChecklistFor" style="font-weight:bold; color:coral;" class="form-control" placeholder="">
+                            </div>
+                            <div class="form-group" ng-show="showFields">
+                                <label>Total Commitments Before Final Closing:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">US$m</span>
+                                    <input type="number" ng-model="TotalCommitments" readonly="readonly" required class="form-control">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Asset Class:</label>
+                                <input type="text" ng-model="AssetName" readonly="readonly" name="AssetName" style="font-weight:bold; color:coral;" class="form-control" placeholder="">
+                            </div>
+                            <div class="form-group">
+                                <label>Deal Name:</label>
+                                <input type="text" ng-model="DealNames" readonly="readonly" name="DealNames" style="font-weight:bold; color:coral;" class="form-control" placeholder="">
+                            </div>
+                            <div class="form-group">
+                                <label>Participating Actis Fund:</label>
+                                <textarea id="txtActisFund" disabled="disabled" class="form-control" rows="4" ng-model="ActisFund" ng-trim="false" style="font-weight:bold; color:coral;"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>New Investment or Follow-on:</label>
+                                <input type="text" ng-model="NewOrFollowup" readonly="readonly" name="DealNames" style="font-weight:bold; color:coral;" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Deal Size:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">US$m</span>
+                                    <input type="text" ng-model="DealSize" required class="form-control" style="font-weight:bold; color:coral;" disabled="disabled">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Current Investment Size:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">US$m</span>
+                                    <input type="text" ng-model="CurrentInvestment" required class="form-control" style="font-weight:bold; color:coral;" disabled="disabled">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Amount already funded:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">US$m</span>
+                                    <input type="text" ng-model="AmountAlreadyFunded" required class="form-control" style="font-weight:bold; color:coral;" disabled="disabled">
+                                </div>
+                            </div>
+                            <div>
+                                <label>Remarks:</label>
+                                <div>
+                                    <textarea id="txtRemarks" class="form-control" rows="4" disabled="disabled" ng-model="txtRemarks" style="font-weight:bold; color:coral;" ng-trim="false"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Consolidated Answers -->
+            <div class="box box-primary" ng-if="StatusID == 21">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Signed Fund Checklist File</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <i class="fa fa-file-pdf-o"></i> &nbsp;<label>Click <a ng-href="https://fundchecklist.act.is/UploadedFiles/DAC/SignedFiles/{{DACFormNumber}}.pdf" target="_blank">here</a> to view the signed file.</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Process History -->
+            <div class="box box-warning">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Status</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table no-margin">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th class="col-md-1">User Name</th>
+                                            <th class="col-md-1">Process Name</th>
+                                            <th class="col-md-2">Created Date</th>
+                                            <th class="col-md-2">Status</th>
+                                            <th class="col-md-1">Pending With / Reviewed By</th>
+                                            <th class="col-md-2">Processed Date</th>
+                                            <th class="col-md-3">Comments</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="PHItem in ProcessHistory">
+                                            <td>
+                                                {{$index+1}}
+                                            </td>
+                                            <td>
+                                                <span>{{PHItem.CreatedBy}}</span>
+                                            </td>
+                                            <td>
+                                                <span>{{PHItem.ProcessGroupName}}</span>
+                                            </td>
+                                            <td>
+                                                <span>{{PHItem.CreatedDate}}</span>
+                                            </td>
+                                            <td>
+                                                <span class="label {{PHItem.StatusCSSClass}}">
+                                                    {{PHItem.StatusName}}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span>{{PHItem.PendingWith}}</span>
+                                            </td>
+                                            <td>
+                                                <span>{{PHItem.ProcessedDate}}</span>
+                                            </td>
+                                            <td>
+                                                <span>{{PHItem.Comments}}</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Questionnaire History -->
+            <div class="box box-warning">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Questionnaire Status</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table no-margin">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Section Name</th>
+                                            <th>Group Name</th>
+                                            <th>Process Name</th>
+                                            <th>Status</th>
+                                            <th>Created Date</th>
+                                            <th>Processed By</th>
+                                            <th>Processed Date</th>
+                                            <th>&nbsp;</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="QAHItem in QAttemptHistory">
+                                            <td>
+                                                {{$index+1}}
+                                            </td>
+                                            <td>
+                                                <a ng-click="SectionQuestions(QAHItem.DACFormID,QAHItem.QSecID, QAHItem.ProcessGroupID)" ng-href="#">
+                                                    <span>{{QAHItem.SectionName}}</span>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a ng-click="PreviewGroupMembers(QAHItem.DACFormID,QAHItem.QSecID, QAHItem.ProcessGroupID)" ng-href="#">
+                                                    <span>{{QAHItem.PendingWithGroupName}}</span>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <span>{{QAHItem.ProcessGroupName}}</span>
+                                            </td>
+                                            <td>
+                                                <span class="label {{QAHItem.StatusCSSClass}}">{{QAHItem.StatusName}}</span>
+                                            </td>
+                                            <td>
+                                                <span>{{QAHItem.CreatedDate}}</span>
+                                            </td>
+                                            <td>
+                                                <span>{{QAHItem.ProcessedByName}}</span>
+                                            </td>
+                                            <td>
+                                                <span>{{QAHItem.ProcessedDate}}</span>
+                                            </td>
+                                            <td ng-if="(QAHItem.StatusCSSClass=='label-success' && (StatusID == 4 || StatusID ==16)) && 
+                                                (ProcessHistory[0].StatusName!='Rejected by IA'
+                                                && ProcessHistory[0].StatusName!='Rejected by DP' 
+                                                && ProcessHistory[0].StatusName!= 'Rejected by IA (Final-IC)'
+                                                && ProcessHistory[0].StatusName!='Rejected by DP (Final-IC)')
+                                                ">
+                                                <img class="img-send-reurn" ng-click="SendBack(QAHItem.QSecID, QAHItem.ProcessGroupID)" src="~/Content/images/sendback.png" title="Send Back" />
+                                                <img class="img-reject" ng-click="Reject(QAHItem.QSecID, QAHItem.ProcessGroupID)" src="~/Content/images/reject.png" title="Reject" />
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        @* Popup to Show Questions *@
+        <div class="modal" id="PreviewQuestions" role="dialog">
+            <div class="modal-dialog" style="width: 800px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h3 class="text-danger">Preview Questions</h3>
+                        <h4>{{SectionName}}</h4>
+                    </div>
+                    <div class="modal-body" style="margin:0px 10px 0px 10px;">
+                        <div class="table-responsive">
+                            <table class="table no-margin">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Question Text</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="ListItem in QuestionsList">
+                                        <td>
+                                            {{ListItem.QusetionNo}}
+                                        </td>
+                                        <td>
+                                            <div ng-if="ListItem.IsQuestionHeading == true">
+                                                <strong ng-bind-html="ListItem.QuestionText"></strong>
+                                            </div>
+                                            <div ng-if="ListItem.IsQuestionHeading == false">
+                                                <p ng-bind-html="ListItem.QuestionText"></p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @* Popup to Show Questions *@
+
+        @* Popup to Show Group Members *@
+        <div class="modal" id="PreviewGroupMembers" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h3 class="text-danger">Group Members</h3>
+                    </div>
+                    <div class="modal-body" style="margin:0px 10px 0px 10px;">
+                        <div class="table-responsive">
+                            <div>
+                                <table class="table no-margin">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Name</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="Item in GroupMembersList">
+                                            <td>
+                                                {{$index+1}}
+                                            </td>
+                                            <td>
+                                                {{Item.USER_NAME}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div style="margin-top: 20px;" ng-show="IsDPDrpVisible=='True'">
+                                <div class="form-group">
+                                    <label>Select Deal Team Member:</label>
+                                    <select class="form-control" id="drpDealTeam" style="width: 100%;" data-ng-model="drpUSER_ID" data-ng-options="u.drpUSER_ID as u.drpUSER_NAME for u in DTUsersList">
+                                        <option value="">{{DealTeamSelectionText}}</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <button type="button" class="btn btn-primary" ng-click="UpdateDT(drpUSER_ID)" data-dismiss="modal">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @* Popup to Show Group Members *@
+
+        @* Popup to Show Form Submit Message *@
+        <div class="modal" id="SuccessMessage" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" ng-click="RedirectToStatusPage()" data-dismiss="modal">&times;</button>
+                        <h3 class="text-info">Success!</h3>
+                    </div>
+                    <div class="modal-body" style="margin:0px 10px 0px 10px;">
+                        <form class="form-horizontal" name="UpdateEmployeeForm">
+                            <div class="form-group">
+                                <label class="text-info"> {{SuccessMessage}}</label>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="RedirectToStatusPage()">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @* Popup to Show Form Submit Message *@
+        @* Popup to Show Form SendBack Reject Message *@
+        <div class="modal" id="SendBackRejectMessage" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" ng-click="RedirectToQuestionnaireStatusPage()" data-dismiss="modal">&times;</button>
+                        <h3 class="text-info">Success!</h3>
+                    </div>
+                    <div class="modal-body" style="margin:0px 10px 0px 10px;">
+                        <form class="form-horizontal" name="UpdateEmployeeForm">
+                            <div class="form-group">
+                                <label class="text-info"> {{SendBackRejectMessage}}</label>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="RedirectToQuestionnaireStatusPage()">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @* Popup to Show Form SendBack Reject Message *@
+
+        @* Popup to Show Form Submit Message *@
+        <div class="modal" id="ErrorMessage" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h3 class="text-danger">Error!</h3>
+                    </div>
+                    <div class="modal-body" style="margin:0px 10px 0px 10px;">
+                        <form class="form-horizontal" name="UpdateEmployeeForm">
+                            <div class="form-group">
+                                <h4> {{ErrorMessage}}</h4>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @* Popup to Show confirm message *@
+        <div class="modal" id="SendbackRejectConfimMessage" role="dialog">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h3 class="text-success">Send Back / Reject Reason</h3>
+                    </div>
+                    <div class="modal-body" style="margin:0px 10px 0px 10px;">
+                        <form name="UpdateSendbakcRejectForm">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Comments</label>
+                                        <textarea class="form-control" id="SendbackRejectComment" rows="4" placeholder="Please enter comments ..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="SubmitSendBackOrReject()">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<input type="hidden" id="allifClass" name="allifClass" value='@AllifClass'>
+
