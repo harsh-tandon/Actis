@@ -1,0 +1,267 @@
+﻿
+@{
+    ViewBag.Title = "ReviewAnswers";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var AllifClass = System.Configuration.ConfigurationManager.AppSettings["AllifClass"].ToString();
+}
+
+
+@section scripts{
+    <script src="~/Scripts/AngularController/DACWorkflowController.js"></script>
+}
+<div ng-controller="AttemptPreIC" data-ng-init="PreviewResponses()">
+    <section class="content-header">
+        <h1>
+            Review Answers
+            <small>View status of each Deal Acquisition Checklist</small>
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i>Home</a></li>
+            <li><a href="#">Fund Checklist</a></li>
+            <li class="active">Fund Checklist Status</li>
+        </ol>
+    </section>
+
+    <!-- Form Body (Page body)-->
+    <section class="content">
+        <!-- History -->
+        <div class="box box-success">
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table no-margin">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Description</th>
+                                    <th>Y/N/N/A</th>
+                                    <th class="col-md-2">Comments</th>
+                                    <th ng-show="showFields">Metric</th>
+                                    <th ng-show="showFields">Y/N/N/A</th>
+                                    @*<th ng-show="showFields" class="col-md-2">Metric Comments</th>*@
+                                    <th class="col-md-1" style="text-align:center;">
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="ListItem in QuestionsList">
+                                    <td>
+                                        {{ListItem.QusetionNo}}
+                                    </td>
+                                    <td>
+                                        <div ng-if="ListItem.IsQuestionHeading == true">
+                                            <strong ng-bind-html="ListItem.QuestionText"></strong>
+                                        </div>
+                                        <div ng-if="ListItem.IsQuestionHeading == false">
+                                            <p ng-bind-html="ListItem.QuestionText"></p>
+                                        </div>
+                                    </td>
+                                    <td>{{ListItem.RadioBtnValue}}</td>
+                                    <td>{{ListItem.TextAreaValue}}</td>
+                                    <td ng-show="showFields">
+                                        <p ng-bind-html="ListItem.Metric"></p>
+                                    </td>
+                                    <td ng-show="showFields">{{ListItem.MetricRadioBtnValue}}</td>
+                                    @*<td ng-show="showFields">{{ListItem.MetricTextAreaValue}}</td>*@
+                                    <td style="text-align:center;">
+                                        <a class="btn btn-app" ng-click="EditAnswer(ListItem.QID, ListItem.QSecID, ListItem.DACFormID)" ng-if="ListItem.IsQuestionHeading == false">
+                                            <i class="fa fa-edit"></i> Edit
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="box-footer">
+                <button type="button" class="btn bg-olive btn-flat margin" ng-click="ReStart()">Re-Start</button>
+                <button type="button" class="btn bg-red-active btn-flat margin" ng-disabled="isSubmitDisabled" ng-click="SubmitFinalAnswers()">Submit &nbsp; <i class="fa fa-spinner fa-spin" ng-show="isSubmitDisabled"></i></button>
+            </div>
+        </div>
+    </section>
+
+    @* Popup to Show Form Submit Message *@
+    <div class="modal" id="SuccessMessage" role="dialog" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" ng-click="RedirectToStatusPage()" data-dismiss="modal">&times;</button>
+                    <h3 class="text-info">Success!</h3>
+                </div>
+                <div class="modal-body" style="margin:0px 10px 0px 10px;">
+                    <form class="form-horizontal" name="UpdateEmployeeForm">
+                        <div class="form-group">
+                            <label class="text-info"> {{SuccessMessage}}</label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="RedirectToStatusPage()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* Popup to Show Form Submit Message *@
+
+    @* Popup to Show Form Submit Message *@
+    <div class="modal" id="ErrorMessage" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h3 class="text-danger">Error!</h3>
+                </div>
+                <div class="modal-body" style="margin:0px 10px 0px 10px;">
+                    <form class="form-horizontal" name="UpdateEmployeeForm">
+                        <div class="form-group">
+                            <h4> {{ErrorMessage}}</h4>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* Popup to Show Form Submit Message *@
+
+    @* Popup to Show Answer Edit *@
+    <div class="modal" id="AnswerEdit" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content" style="width:800px;" ng-repeat="AnsItem in AnswerDetails">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h3 class="text-info">
+                        Edit your answer
+                    </h3>
+                </div>
+                <div class="modal-body" style="margin:0px 10px 0px 10px;">
+                    <form class="form-horizontal" name="UpdateEditAnswer">
+                        <div class="form-group">
+                            <div ng-show="showFields">
+                                <strong>Metric</strong>
+                                <p ng-if="AnsItem.Metric != null" class="lead" ng-bind-html="AnsItem.Metric"></p>
+                                <input type="hidden" value="{{AnsItem.Metric}}" id="hdMetricValue" />
+                                <div ng-if="AnsItem.Metric != null" style="margin-left:30px;">
+                                    <div class="form-group">
+                                        <label>Select Option</label>
+                                        <div class="radio">
+                                            <label>
+                                                <input type="radio" class="minimal" name="Metric_{{AnsItem.AnswerID}}" id="Metric_Yes_{{AnsItem.AnswerID}}" ng-checked="AnsItem.MetricRadioBtnValue == 'Yes'" value="Yes">
+                                                Yes
+                                            </label>
+                                        </div>
+                                        <div class="radio">
+                                            <label>
+                                                <input type="radio" class="minimal" name="Metric_{{AnsItem.AnswerID}}" id="Metric_No_{{AnsItem.AnswerID}}" ng-checked="AnsItem.MetricRadioBtnValue == 'No'" value="No">
+                                                No
+                                            </label>
+                                        </div>
+                                        @*<div class="radio">
+                                                <label>
+                                                    <input type="radio" class="minimal" name="Metric_{{AnsItem.AnswerID}}" id="Metric_NA_{{AnsItem.AnswerID}}" ng-checked="AnsItem.MetricRadioBtnValue == 'NA'" value="NA">
+                                                    N/A
+                                                </label>
+                                            </div>*@
+                                    </div>
+                                </div>
+
+                                <div ng-if="AnsItem.Metric != null" class="col-md-12">
+                                    <div class="form-group col-md-6">
+                                        <label>Enter Comments</label>
+                                        <textarea class="form-control" id="Metric_Comments_{{AnsItem.AnswerID}}" rows="3" style="resize: none;  min-width:300px;" placeholder="Enter ...">{{AnsItem.MetricTextAreaValue}}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <strong>Action</strong>
+                                <p class="lead" ng-bind-html="AnsItem.QuestionText"></p>
+
+                                <div style="margin-left:30px;">
+                                    <div class="form-group">
+                                        <label>Select Option</label>
+                                        <div class="radio">
+                                            <label>
+                                                <input type="radio" class="minimal" name="{{AnsItem.AnswerID}}" id="Yes_{{AnsItem.AnswerID}}" ng-checked="AnsItem.RadioBtnValue == 'Yes'" value="Yes" ng-click="GetFollowupTextForQuestionIdReviewPage(AnsItem.AnswerID,'Yes',AnsItem.YesFollowupText)">
+                                                Yes
+                                            </label>
+                                        </div>
+                                        <div class="radio">
+                                            <label>
+                                                <input type="radio" class="minimal" name="{{AnsItem.AnswerID}}" id="No_{{AnsItem.AnswerID}}" ng-checked="AnsItem.RadioBtnValue == 'No'" value="No" ng-click="GetFollowupTextForQuestionIdReviewPage(AnsItem.AnswerID,'No',AnsItem.NoFollowupText)">
+                                                No
+                                            </label>
+                                        </div>
+                                        @*<div class="radio">
+                                                <input type="radio" class="minimal" name="{{AnsItem.AnswerID}}" id="NA_{{AnsItem.AnswerID}}" ng-checked="AnsItem.RadioBtnValue == 'NA'" value="NA">
+                                                N/
+                                            </label>
+                                        </div>*@
+
+                                        <div id="yesFollowUp_{{AnsItem.AnswerID}}">
+                                            <blockquote ng-if="AnsItem.YesFollowupText!='' && AnsItem.YesFollowupText!= null && AnsItem.RadioBtnValue == 'Yes'">
+                                                <strong>Follow-up</strong>
+                                                <p id="yesFollowUpText_{{AnsItem.AnswerID}}" ng-bind-html="AnsItem.YesFollowupText"></p>
+                                            </blockquote>
+                                        </div>
+                                        <div id="noFollowUp_{{AnsItem.AnswerID}}">
+                                            <blockquote ng-if="AnsItem.NoFollowupText!='' && AnsItem.NoFollowupText!= null && AnsItem.RadioBtnValue == 'No'">
+                                                <strong>Follow-up</strong>
+                                                <p id="noFollowUpText_{{AnsItem.AnswerID}}" ng-bind-html="AnsItem.NoFollowupText"></p>
+                                            </blockquote>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-group col-md-6">
+                                        <label>Enter Comments</label>
+                                        <textarea class="form-control" id="Comments_{{AnsItem.AnswerID}}" rows="3" style="resize: none;  min-width:300px;" placeholder="Enter ...">{{AnsItem.TextAreaValue}}</textarea>
+                                    </div>
+                                </div>
+                                <!-- Link Question-->
+                                <input type="hidden" value="{{AnsItem.YesLinkQuestionId}}" id="hdYesLinkQId" />
+                                <input type="hidden" value="{{AnsItem.NoLinkQuestionId}}" id="hdNoLinkQId" />
+                                <!--End-->
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success" ng-click="SaveAnswer(AnsItem.AnswerID )" data-dismiss="modal">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* Popup to Show Answer Edit *@
+
+    @* Popup to Show Form Submit Message *@
+    <div class="modal" id="SaveSuccessMessage" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" ng-click="RefreshPage()" data-dismiss="modal">&times;</button>
+                    <h3 class="text-info">Success!</h3>
+                </div>
+                <div class="modal-body" style="margin:0px 10px 0px 10px;">
+                    <form class="form-horizontal" name="UpdateEmployeeForm">
+                        <div class="form-group">
+                            <label class="text-info"> {{SuccessMessage}}</label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="RefreshPage()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* Popup to Show Form Submit Message *@
+</div>
+
+<input type="hidden" id="allifClass" name="allifClass" value='@AllifClass'>

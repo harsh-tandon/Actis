@@ -1,0 +1,347 @@
+﻿
+@{
+    ViewBag.Title = "AttemptPreIC";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var AllifClass = System.Configuration.ConfigurationManager.AppSettings["AllifClass"].ToString();
+}
+
+
+@section scripts{
+    <script src="~/Scripts/AngularController/DACWorkflowController.js"></script>
+}
+<div ng-controller="AttemptPreIC" data-ng-init="GetPreICQuestions(1)">
+    <section class="content-header">
+        <h1>
+            Fund Checklist Questions
+            <small>View status of each Deal Acquisition Checklist</small>
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i>Home</a></li>
+            <li><a href="#">Fund Checklist</a></li>
+            <li class="active">Fund Checklist Status</li>
+        </ol>
+    </section>
+
+    <!-- Form Body (Page body)-->
+    <section class="content">
+        <!-- History -->
+        <div class="box box-success">
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th>Progress</th>
+                                    <th style="width: 40px"></th>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="progress progress-xs progress-striped active">
+                                            <div class="progress-bar progress-bar-primary" ng-style="PercentageObj"></div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge bg-blue">{{RoundPercentage}}%</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="lead" ng-bind-html="QuestionHeading"></div>
+                        <div ng-repeat="Item in QuestionsList">
+                            <div ng-if="Item.IsQuestionHeading == false || null" style="margin-bottom: 20px;">
+                                <div class="col-md-12">
+                                    <div class="col-md-8" style="margin-left: 20px;">
+                                        <input type="hidden" value="{{Item.Metric}}" id="hdMetric_{{Item.QID}}" />
+                                        <table>
+                                            <tr ng-show="showFields">
+                                                <td>
+                                                    <div><strong>Action Number:</strong><p class="lead" ng-bind-html="Item.QusetionNo"></p></div>
+                                                </td>
+
+                                            </tr>
+
+                                            <tr ng-show="showFields">
+                                                <td>
+                                                    <strong>Clause Reference:</strong> <p class="lead" ng-bind-html="Item.ClauseReference"></p>
+                                                </td>
+                                            </tr>
+                                            <tr ng-show="showFields">
+                                                <td colspan="2" ng-if="Item.Metric != null && Item.Metric.length>0">
+                                                    <strong>Metric</strong>
+                                                    <p class="lead" ng-bind-html="Item.Metric"></p>
+                                                </td>
+                                            </tr>
+                                            <tr ng-show="showFields">
+                                                <td colspan="2" ng-if="Item.Metric != null && Item.Metric.length>0">
+                                                    <div style="margin-left:30px;">
+                                                        <div class="form-group">
+                                                            <label>Select Option</label>
+                                                            <div class="radio">
+                                                                <label>
+                                                                    <input type="radio" class="minimal" name="Metric_{{Item.QID}}" id="Metric_Yes_{{Item.QID}}" ng-checked="Item.RadioBtnCheck == 'Yes'" value="Yes">
+                                                                    Yes
+                                                                </label>
+                                                            </div>
+                                                            <div class="radio">
+                                                                <label>
+                                                                    <input type="radio" class="minimal" name="Metric_{{Item.QID}}" id="Metric_No_{{Item.QID}}" ng-checked="Item.RadioBtnCheck == 'No'" value="No">
+                                                                    No
+                                                                </label>
+                                                            </div>
+                                                            @*<div class="radio">
+                                            <label>
+                                                <input type="radio" class="minimal" name="Metric_{{Item.QID}}" id="Metric_NA_{{Item.QID}}" ng-checked="Item.RadioBtnCheck == 'NA'" value="NA">
+                                                N/A
+                                            </label>
+                                        </div>*@
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr ng-show="showFields">
+                                                <td colspan="2" ng-if="Item.Metric!=null && Item.Metric.length>0">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group col-md-6">
+                                                            <label>Enter Comments</label>
+                                                            <textarea class="form-control" id="Metric_Comment_{{Item.QID}}" rows="3" style="resize: none;  min-width:300px;" placeholder="Enter ...">{{Item.MetricTextAreaValue}}</textarea>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <strong>Action</strong>
+                                                    <p class="lead" ng-bind-html="Item.QuestionText"></p>
+                                                    @*<button type="button" class="btn bg-olive btn-flat margin" ng-if="Item.ParentQID != null && Item.ParentQID != 0" ng-click="GetLinkedQuestions(Item.ParentQID)">Linked Question</button>*@
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2">
+                                                    <div style="margin-left:30px;">
+                                                        <div class="form-group">
+                                                            <label>Select Option</label>
+                                                            <div class="radio">
+                                                                <label>
+                                                                    <input type="radio" class="minimal" name="{{Item.QID}}" id="Yes_{{Item.QID}}" ng-checked="Item.RadioBtnCheck == 'Yes'" value="Yes" ng-click="GetFollowupTextForQuestionId(Item.QID,Item.YesLinkQuestionId,'Yes', Item.YesFollowupText)">
+                                                                    Yes
+                                                                </label>
+                                                            </div>
+                                                            <div class="radio">
+                                                                <label>
+                                                                    <input type="radio" class="minimal" name="{{Item.QID}}" id="No_{{Item.QID}}" ng-checked="Item.RadioBtnCheck == 'No'" value="No" ng-click="GetFollowupTextForQuestionId(Item.QID,Item.NoLinkQuestionId, 'No', Item.NoFollowupText)">
+                                                                    No
+                                                                </label>
+                                                            </div>
+                                                            @*<div class="radio">
+                                            <label>
+                                                <input type="radio" class="minimal" name="{{Item.QID}}" id="NA_{{Item.QID}}" ng-checked="Item.RadioBtnCheck == 'NA'" value="NA" ng-click="GetFollowupTextForQuestionId(Item.QID,'Na')">
+                                                N/A            </label>
+                                        </div>*@
+                                                            <input type="hidden" id="hdYes_{{Item.QID}}_{{Item.YesLinkQuestionId}}" value="{{Item.YesLinkQuestionId}}" />
+                                                            <input type="hidden" id="hdNo_{{Item.QID}}_{{Item.NoLinkQuestionId}}" value="{{Item.NoLinkQuestionId}}" />
+
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group col-md-6">
+                                                            <label>Enter Comments</label>
+                                                            <textarea class="form-control" id="{{Item.QID}}" rows="3" style="resize: none;  min-width:300px;" placeholder="Enter ...">{{Item.TextAreaValue}}</textarea>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <div ng-show="showFields" class="col-md-12" style="margin-top:10px;">
+                                            <div id="yesFollowUp_{{Item.QID}}">
+                                                <blockquote ng-if="Item.YesFollowupText!='' && Item.YesFollowupText!= null && Item.RadioBtnCheck == 'Yes'">
+                                                    <strong>Follow-up</strong>
+                                                    <p id="yesFollowUpText_{{Item.QID}}" ng-bind-html="Item.YesFollowupText"></p>
+                                                </blockquote>
+                                            </div>
+                                            <div id="noFollowUp_{{Item.QID}}">
+                                                <blockquote ng-if="Item.NoFollowupText!='' && Item.NoFollowupText!= null && Item.RadioBtnCheck == 'No'">
+                                                    <strong>Follow-up</strong>
+                                                    <p id="noFollowUpText_{{Item.QID}}" ng-bind-html="Item.NoFollowupText"></p>
+                                                </blockquote>
+                                            </div>
+                                        </div>
+                                        &nbsp;
+                                        <hr />
+                                    </div>
+
+                                    <div class="col-md-3" ng-if="ProcessGroupID == 2 && Item.PreICAnswers != null">
+                                        <h3>Pre-IC Answer:</h3>
+                                        <blockquote>
+                                            <div ng-bind-html="Item.PreICAnswers"></div>
+                                        </blockquote>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12" style="margin-top:10px;">
+                        <div ng-repeat="RefItem in ReferenceItemsList">
+                            <blockquote ng-if="RefItem.ReferenceNote!='' || RefItem.ReferenceNote!=''">
+                                <p ng-bind-html="RefItem.ReferenceNote"></p>
+                            </blockquote>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="box-footer">
+                <button type="button" class="btn bg-olive btn-flat margin" ng-disabled="PreviousIsDisabled" ng-click="PreviousQuestions()">Previous</button>
+                <label>
+                    {{CurrentQuestion}} / {{TotalQuestions}}
+                </label>
+                <button type="button" class="btn bg-olive btn-flat margin" ng-disabled="NextIsDisabled" ng-click="NextQuestions()">Next</button>
+                <button type="button" class="btn bg-olive btn-flat margin" ng-disabled="isDisabled" ng-click="SaveAnswers()">Save <i class="fa fa-spinner fa-spin" ng-show="ShowLoading"></i></button>
+                <button type="button" class="btn bg-red-active btn-flat margin" ng-show="ReviewBtnVissible == true" ng-click="ReviewAnswers()">Review Answers</button>
+            </div>
+        </div>
+    </section>
+
+    @* Popup to Show Form Submit Message *@
+    <div class="modal" id="SuccessMessage" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" ng-click="RedirectToStatusPage()" data-dismiss="modal">&times;</button>
+                    <h3 class="text-info">Success!</h3>
+                </div>
+                <div class="modal-body" style="margin:0px 10px 0px 10px;">
+                    <form class="form-horizontal" name="UpdateEmployeeForm">
+                        <div class="form-group">
+                            <label class="text-info"> {{SuccessMessage}}</label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="RedirectToStatusPage()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* Popup to Show Form Submit Message *@
+
+    @* Popup to Show Form Submit Message *@
+    <div class="modal" id="ErrorMessage" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h3 class="text-danger">Error!</h3>
+                </div>
+                <div class="modal-body" style="margin:0px 10px 0px 10px;">
+                    <form class="form-horizontal" name="UpdateEmployeeForm">
+                        <div class="form-group">
+                            <h4> {{ErrorMessage}}</h4>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* Popup to Show Form Submit Message *@
+
+    @* Popup to Show Linked Question details *@
+    @*<div class="modal" id="LinkedQuestion" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content" style="width:800px;" ng-repeat="Item in QuestionsList">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h3 class="text-info">
+                            Attempt your answer for Linked Question
+                        </h3>
+                    </div>
+                    <div class="modal-body" style="margin:0px 10px 0px 10px;">
+                        <form class="form-horizontal" name="LinkedQuestionForm">
+                            <div class="form-group">
+                                <div>
+                                    <p class="lead" ng-bind-html="Item.QuestionText"></p>
+
+                                    <div style="margin-left:30px;">
+                                        <div class="form-group">
+                                            <label>Select Option</label>
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" class="minimal" name="{{Item.QID}}" id="Linked_Yes_{{Item.QID}}" ng-checked="Item.RadioBtnValue == 'Yes'" value="Yes">
+                                                    Yes
+                                                </label>
+                                            </div>
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" class="minimal" name="{{Item.QID}}" id="Linked_No_{{Item.QID}}" ng-checked="Item.RadioBtnValue == 'No'" value="No">
+                                                    No
+                                                </label>
+                                            </div>
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" class="minimal" name="{{Item.QID}}" id="Linked_NA_{{Item.QID}}" ng-checked="Item.RadioBtnValue == 'NA'" value="NA">
+                                                    N/A
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="form-group col-md-6">
+                                            <label>Enter Comments</label>
+                                            <textarea class="form-control" id="Linked_{{Item.QID}}" rows="3" style="resize: none;  min-width:300px;" placeholder="Enter ...">{{Item.TextAreaValue}}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div ng-show="showFields">
+                                    <p class="lead" ng-bind-html="Item.Metric"></p>
+                                    <input type="hidden" value="{{Item.Metric}}" id="hdMetric" />
+                                    <div ng-if="Item.Metric!=null && Item.Metric!=''" style="margin-left:30px;">
+                                        <div class="form-group">
+                                            <label>Select Option</label>
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" class="minimal" name="Linked_Metric_{{Item.QID}}" id="Linked_Metric_Yes_{{Item.QID}}" ng-checked="Item.MetricRadioBtnValue == 'Yes'" value="Yes">
+                                                    Yes
+                                                </label>
+                                            </div>
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" class="minimal" name="Linked_Metric_{{Item.QID}}" id="Linked_Metric_No_{{Item.QID}}" ng-checked="Item.MetricRadioBtnValue == 'No'" value="No">
+                                                    No
+                                                </label>
+                                            </div>
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" class="minimal" name="Linked_Metric_{{Item.QID}}" id="Linked_Metric_NA_{{Item.QID}}" ng-checked="Item.MetricRadioBtnValue == 'NA'" value="NA">
+                                                    N/A
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div ng-if="Item.Metric!=null && Item.Metric!=''" class="col-md-12">
+                                        <div class="form-group col-md-6">
+                                            <label>Enter Comments</label>
+                                            <textarea class="form-control" id="Linked_Metric_Comments_{{Item.QID}}" rows="3" style="resize: none;  min-width:300px;" placeholder="Enter ...">{{Item.MetricTextAreaValue}}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-success" ng-click="SaveLinkedQuestions()" data-dismiss="modal">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>*@
+</div>
+<input type="hidden" id="allifClass" name="allifClass" value='@AllifClass'>
